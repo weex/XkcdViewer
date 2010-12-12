@@ -1,4 +1,4 @@
-package net.bytten.xkcdviewer;
+package com.davidsterry.simplepenart;
 
 import android.util.AttributeSet;
 import android.view.MotionEvent;

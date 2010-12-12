@@ -1,4 +1,4 @@
-package net.bytten.xkcdviewer;
+package com.davidsterry.simplepenart;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -12,7 +12,7 @@ public class SettingsActivity extends PreferenceActivity {
         addPreferencesFromResource(R.xml.prefs);
  
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        final boolean value = prefs.getBoolean("useZoomControls",!XkcdViewerActivity.isIncredible());
+        final boolean value = prefs.getBoolean("useZoomControls",!SimplePenArtActivity.isIncredible());
         ((CheckBoxPreference)findPreference("useZoomControls"))
             .setChecked(value);
     }

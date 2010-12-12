@@ -1,4 +1,4 @@
-package net.bytten.xkcdviewer;
+package com.davidsterry.simplepenart;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -33,7 +33,7 @@ public class ArchiveActivity extends ListActivity {
     
     static Pattern archiveItemPattern = Pattern.compile(
             // group(1): comic number;   group(2): date;   group(3): title
-            "\\s*<a href=\"/(\\d+)/\" title=\"(\\d+-\\d+-\\d+)\">([^<]+)</a><br/>\\s*");
+            "\\s*<a href=\"/(\\d+)/\">([^<]+)</a><br />\\s*");
     
     public Handler handler = new Handler();
     
@@ -52,7 +52,7 @@ public class ArchiveActivity extends ListActivity {
         final Intent intent = getIntent();
 
         final ProgressDialog pd = ProgressDialog.show(this,
-                "XkcdViewer", "Loading archive...", true, true,
+                "SimplePenArt", "Loading archive...", true, true,
                 new OnCancelListener() {
             public void onCancel(DialogInterface dialog) {
                 if (loadThread[0] != null) {
@@ -143,7 +143,7 @@ public class ArchiveActivity extends ListActivity {
     }
     
     protected void loadArchive(List<ArchiveItem> items) throws Throwable {
-        URL url = new URL("http://www.xkcd.com/archive/");
+        URL url = new URL("http://www.simplepenart.com/archive");
         BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
         
         String line;
@@ -235,8 +235,8 @@ public class ArchiveActivity extends ListActivity {
         public void onClick(View v) {
             Intent comic = new Intent();
             comic.addCategory(Intent.CATEGORY_BROWSABLE);
-            comic.setData(Uri.parse("http://www.xkcd.com/"+item.comicNumber+"/"));
-            comic.setClass(getContext(), XkcdViewerActivity.class);
+            comic.setData(Uri.parse("http://www.simplepenart.com/"+item.comicNumber));
+            comic.setClass(getContext(), SimplePenArtActivity.class);
             getContext().startActivity(comic);
         }
     }

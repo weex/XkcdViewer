@@ -1,7 +1,10 @@
 /*
- *  XkcdViewer - Android app to view XKCD comics with hover text
+ *  Simple Pen Art - Android app to view SimplePenArt comics with hover text
+ *  Copyright (C) 2010 David Sterry
+ * 
+ *  Based on:
+ *  XkcdViewer - Android app to view xkcd comics with hover text
  *  Copyright (C) 2009-2010 Tom Coxon, Tyler Breisacher
- *  XKCD belongs to Randall Munroe.
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,7 +20,7 @@
  *  with this program; if not, write to the Free Software Foundation, Inc.,
  *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-package net.bytten.xkcdviewer;
+package com.davidsterry.simplepenart;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -71,7 +74,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.TextView.OnEditorActionListener;
 
-public class XkcdViewerActivity extends Activity {
+public class SimplePenArtActivity extends Activity {
 
     static class CouldntParseComicPage extends Exception {
         private static final long serialVersionUID = 1L;
@@ -84,19 +87,19 @@ public class XkcdViewerActivity extends Activity {
     }
 
     static Pattern comicPattern = Pattern.compile(
-                       "<img\\ssrc=\"(http://[^\"]*imgs\\.xkcd\\.com/comics/[^\"]*)\"\\s"+
+                       "<img\\ssrc=\"(http://[^\"]*imgs\\.simplepenart\\.com/[^\"]*)\"\\s"+
                        "title=\"([^\"]*)\" alt=\"([^\"]*)\""),
                    comicNumberPattern = Pattern.compile(
-                       "<h3>Permanent link to this comic: "+
-                       "http://xkcd\\.com/([0-9]+)/</h3>"),
-                   xkcdHomePattern = Pattern.compile(
-                       "http://(www\\.)?xkcd\\.com(/)?"),
+                       "<p>Permanent link to this comic: "+
+                       "http://www\\.simplepenart\\.com/([0-9]+)<br"),
+                   simplepenartHomePattern = Pattern.compile(
+                       "http://(www\\.)?simplepenart\\.com(/)?"),
                    comicUrlPattern = Pattern.compile(
-                       "http://(www\\.)?xkcd\\.com/([0-9]+)(/)?"),
+                       "http://(www\\.)?simplepenart\\.com/([0-9]+)(/)?"),
                    archiveUrlPattern = Pattern.compile(
-                       "http://(www\\.)?xkcd\\.com/archive(/)?");
+                       "http://(www\\.)?simplepenart\\.com/archive(/)?");
     
-    public static final String DONATE_URL = "https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=C9JRVA3NTULSL&lc=US&item_name=XkcdViewer%20donation&item_number=xkcdviewer&currency_code=USD";
+    public static final String DONATE_URL = "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=C65S7VR4FFWGQ";
     
     public static final FrameLayout.LayoutParams ZOOM_PARAMS =
         new FrameLayout.LayoutParams(
@@ -104,7 +107,7 @@ public class XkcdViewerActivity extends Activity {
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 Gravity.BOTTOM);
 
-    public static final String PACKAGE_NAME = "net.bytten.xkcdviewer";
+    public static final String PACKAGE_NAME = "com.davidsterry.simplepenart";
     
     public static final int MENU_REFRESH = 1,
         MENU_RANDOM = 2,
@@ -296,19 +299,19 @@ public class XkcdViewerActivity extends Activity {
                     this.finish();
                 } else {
                     // it wasn't a link to comic or to the archive
-                    m = xkcdHomePattern.matcher(i.getDataString());
+                    m = simplepenartHomePattern.matcher(i.getDataString());
                     // last ditch attempt: was it a link to the home page?
                     if (m.matches()) {
                         loadComicNumber(null);
                     } else {
-                        Toast.makeText(this, "XkcdViewer can't display this content.",
+                        Toast.makeText(this, "Simple Pen Art can't display this content.",
                                 Toast.LENGTH_SHORT).show();
                         this.finish();
                     }
                 }
             }
         } else {
-            // Started by XkcdViewer icon
+            // Started by SimplePenArt icon
             if (isReopenLastComic()) {
                 loadComicNumber(getLastReadComic());
             } else {
@@ -319,14 +322,14 @@ public class XkcdViewerActivity extends Activity {
     
     public void showArchive() {
         Intent i = new Intent(this, ArchiveActivity.class);
-        i.setData(Uri.parse("http://xkcd.com/archive/"));
+        i.setData(Uri.parse("http://simplepenart.com/archive/"));
         i.setAction(Intent.ACTION_VIEW);
         startActivity(i);
     }
     
     public void showBookmarks() {
         Intent i = new Intent(this, ArchiveActivity.class);
-        i.setData(Uri.parse("http://xkcd.com/archive/?bookmarks"));
+        i.setData(Uri.parse("http://simplepenart.com/archive/?bookmarks"));
         i.setAction(Intent.ACTION_VIEW);
         startActivity(i);
     }
@@ -402,7 +405,7 @@ public class XkcdViewerActivity extends Activity {
             .setIcon(R.drawable.ic_menu_refresh);
         menu.add(0, MENU_SETTINGS, 0, "Preferences")
             .setIcon(android.R.drawable.ic_menu_manage);
-        menu.add(0, MENU_DONATE, 0, "Donate")
+        menu.add(0, MENU_DONATE, 0, "Buy SPA a Latte")
             .setIcon(R.drawable.ic_menu_heart);
         menu.add(0, MENU_ABOUT, 0, "About")
             .setIcon(android.R.drawable.ic_menu_info_details);
@@ -476,8 +479,8 @@ public class XkcdViewerActivity extends Activity {
         alert.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 String query = input.getText().toString();
-                Uri uri = Uri.parse("http://xkcd.com/archive/?q="+Uri.encode(query));
-                Intent i = new Intent(XkcdViewerActivity.this, ArchiveActivity.class);
+                Uri uri = Uri.parse("http://simplepenart.com/archive/?q="+Uri.encode(query));
+                Intent i = new Intent(SimplePenArtActivity.this, ArchiveActivity.class);
                 i.setAction(Intent.ACTION_VIEW);
                 i.setData(uri);
                 startActivity(i);
@@ -496,7 +499,7 @@ public class XkcdViewerActivity extends Activity {
         builder.setTitle(R.string.app_name);
         builder.setIcon(android.R.drawable.ic_menu_info_details);
         builder.setNegativeButton(android.R.string.ok, null);
-        builder.setNeutralButton("Donate", new DialogInterface.OnClickListener() {
+        builder.setNeutralButton("Latte!", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 donate();
             }
@@ -548,7 +551,7 @@ public class XkcdViewerActivity extends Activity {
             final Thread[] saveThread = new Thread[1];
 
             final ProgressDialog pd = ProgressDialog.show(this,
-                    "XkcdViewer", "Saving Image...", true, true,
+                    "Simple Pen Art", "Saving Image...", true, true,
                     new OnCancelListener() {
                 public void onCancel(DialogInterface dialog) {
                     if (saveThread[0] != null) {
@@ -584,7 +587,7 @@ public class XkcdViewerActivity extends Activity {
                 public void cancel() {
                     handler.post(new Runnable() {
                         public void run() {
-                            Toast.makeText(XkcdViewerActivity.this,
+                            Toast.makeText(SimplePenArtActivity.this,
                                     "Canceled image sharing.",
                                     Toast.LENGTH_SHORT).show();
                         }
@@ -603,7 +606,7 @@ public class XkcdViewerActivity extends Activity {
                 FileOutputStream fos = null;
                 InputStream is = null;
                 try {
-                    File file = File.createTempFile("xkcd-attachment-", ".png");
+                    File file = File.createTempFile("simplepenart-attachment-", ".png");
                     fos = new FileOutputStream(file);
                     is = imageURL.openStream();
 
@@ -635,11 +638,11 @@ public class XkcdViewerActivity extends Activity {
     }
 
     public String getCurrentComicUrl() {
-        return "http://xkcd.com/"+comicInfo.number+"/";
+        return "http://simplepenart.com/"+comicInfo.number+"/";
     }
 
     public void showHoverText() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(XkcdViewerActivity.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(SimplePenArtActivity.this);
         builder.setMessage(comicInfo.altText);
         builder.setNeutralButton("Close", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
@@ -653,7 +656,7 @@ public class XkcdViewerActivity extends Activity {
     public void failed(final String reason) {
         handler.post(new Runnable() {
             public void run() {
-                AlertDialog.Builder builder = new AlertDialog.Builder(XkcdViewerActivity.this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(SimplePenArtActivity.this);
                 builder.setMessage("Comic loading failed: "+reason);
                 AlertDialog alert = builder.create();
                 alert.show();
@@ -680,7 +683,7 @@ public class XkcdViewerActivity extends Activity {
     public void loadComicNumber(final String number) {
 
         final ProgressDialog pd = ProgressDialog.show(this,
-                "XkcdViewer", "Loading comic...", true, true,
+                "Simple Pen Art", "Loading comic...", true, true,
                 new OnCancelListener() {
             public void onCancel(DialogInterface dialog) {
                 if (currentLoadThread != null) {
@@ -741,8 +744,8 @@ public class XkcdViewerActivity extends Activity {
 
                 webview.clearView();
                 final ProgressDialog pd = ProgressDialog.show(
-                        XkcdViewerActivity.this,
-                        "XkcdViewer", "Loading comic image...", false, true,
+                        SimplePenArtActivity.this,
+                        "Simple Pen Art", "Loading comic image...", false, true,
                         new OnCancelListener() {
                             public void onCancel(DialogInterface dialog) {
                                 webview.stopLoading();
@@ -772,16 +775,16 @@ public class XkcdViewerActivity extends Activity {
 
     public URL getComicFromNumber(String number) throws MalformedURLException {
         if (number.equals("404")) number = "405";
-        return new URL("http", "xkcd.com", "/"+number+"/");
+        return new URL("http", "www.simplepenart.com", "/"+number);
     }
 
     public URL getLastComic() throws MalformedURLException {
-        return new URL("http", "xkcd.com", "/");
+        return new URL("http", "www.simplepenart.com", "/");
     }
 
     public URL getRandomComic() throws IOException {
         HttpURLConnection http = (HttpURLConnection) new URL("http",
-                "dynamic.xkcd.com", "/random/comic/").openConnection();
+                "www.simplepenart.com", "/random").openConnection();
         return new URL(http.getHeaderField("Location"));
     }
 
