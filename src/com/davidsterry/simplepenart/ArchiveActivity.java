@@ -33,7 +33,7 @@ public class ArchiveActivity extends ListActivity {
     
     static Pattern archiveItemPattern = Pattern.compile(
             // group(1): comic number;   group(2): date;   group(3): title
-            "\\s*<a href=\"/(\\d+)/\">([^<]+)</a><br />\\s*");
+            "\\s*<a href=\"/(\\d+)\"[^>]+>([^<]+)</a><br />\\s*");
     
     public Handler handler = new Handler();
     
@@ -154,7 +154,7 @@ public class ArchiveActivity extends ListActivity {
             while (m.find()) {
                 ArchiveItem item = new ArchiveItem();
                 item.comicNumber = m.group(1);
-                item.title = m.group(3);
+                item.title = m.group(2);
                 if (BookmarksHelper.isBookmarked(ArchiveActivity.this, item))
                     item.bookmarked = true;
                 items.add(item);

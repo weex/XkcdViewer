@@ -3,7 +3,7 @@
 <string name="app_name">Simple Pen Art</string>
 <string name="app_archive_label">Archive - Simple Pen Art</string>
 <string name="app_bookmarks_label">Favorites - Simple Pen Art</string>
-<string name="app_search_title_label">Search by Title(pending) - Simple Pen Art</string>
+<string name="app_search_title_label">Search by Title - Simple Pen Art</string>
 <string name="aboutText">
     SimplePenArt v%s. Application for viewing Simple Pen Art comics with hover text.\n\n
     Copyright (C) 2010 David Sterry\n\n

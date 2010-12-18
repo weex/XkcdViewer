@@ -322,7 +322,7 @@ public class SimplePenArtActivity extends Activity {
     
     public void showArchive() {
         Intent i = new Intent(this, ArchiveActivity.class);
-        i.setData(Uri.parse("http://simplepenart.com/archive/"));
+        i.setData(Uri.parse("http://simplepenart.com/archive"));
         i.setAction(Intent.ACTION_VIEW);
         startActivity(i);
     }
